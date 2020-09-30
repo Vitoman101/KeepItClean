@@ -19,11 +19,19 @@ namespace KeepItClean
 
         public static readonly List<string> documentsExtension = new List<string> 
         {".doc", ".docx", ".html", ".htm", ".odt", ".pdf",
-        ".xls", ".xlsx", ".ods", ".ppt", ".pptx", ".txt" };
+        ".xls", ".xlsx", ".ods", ".ppt", ".pptx", ".txt", 
+        ".dita", ".json", ".xml"};
 
         public static readonly List<string> compressionExtension = new List<string>
         {".zip", ".rar", ".7z", ".deb", ".pkg", ".rpm",
         ".tar.gz", ".z"};
+
+        public static readonly List<string> videoExtension = new List<string>
+        {".mp4", ".m4a", ".m4v", ".f4v", ".f4a", ".m4b",
+        ".m4r", ".f4b",".mov", ".3gp",".3gp2", ".3g2",
+        ".3gpp", ".3gpp2",".ogg", ".oga",".ogv", ".ogx",
+        ".wmv", ".wma",".asf", ".webm",".flv", ".avi",
+        ".hdv", ".mvx"};
 
         public static readonly List<string> directoriesNotToMove = new List<string> 
         {   Environment.GetFolderPath(Environment.SpecialFolder.MyComputer).ToString(), 
@@ -36,14 +44,15 @@ namespace KeepItClean
             Environment.GetFolderPath(Environment.SpecialFolder.Desktop).ToString(),
         };
 
-        readonly static string DESKTOP = new KnownFolder(KnownFolderType.Desktop).Path;
-        readonly static string PICTURES = new KnownFolder(KnownFolderType.Pictures).Path;
-        readonly static string DOCUMENTS = new KnownFolder(KnownFolderType.Documents).Path;
+        public readonly static string DESKTOP = new KnownFolder(KnownFolderType.Desktop).Path;
+        public readonly static string PICTURES = new KnownFolder(KnownFolderType.Pictures).Path;
+        public readonly static string DOCUMENTS = new KnownFolder(KnownFolderType.Documents).Path;
+        public readonly static string VIDEOS = new KnownFolder(KnownFolderType.Videos).Path;
 
         readonly static DirectoryInfo dir = new DirectoryInfo(DESKTOP);
-        public static void moveImagesToPictures()
+
+        private static void moveImagesToPictures()
         {
-            
             foreach (FileInfo file in dir.EnumerateFiles())
             {
                 if (imagesExtension.Contains(file.Extension.ToLowerInvariant()))
@@ -75,7 +84,7 @@ namespace KeepItClean
             }
         }
 
-        public static void moveDocumentsToDocuments()
+        private static void moveDocumentsToDocuments()
         {          
             foreach (FileInfo file in dir.EnumerateFiles())
             {
@@ -108,7 +117,7 @@ namespace KeepItClean
             }
         }
 
-        public static void createDirIfNotExist()
+        private static void createDirIfNotExist()
         {
             var desktopFolder = Path.Combine(DESKTOP, Environment.UserName);
             var zipFolder = Path.Combine(DESKTOP, "ZIP");
@@ -128,15 +137,14 @@ namespace KeepItClean
             }
         }
 
-        public static bool PathEquals(this string path1, string path2)
+        private static bool PathEquals(this string path1, string path2)
         {
             return Path.GetFullPath(path1)
                 .Equals(Path.GetFullPath(path2), StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static void moveAllFoldersInOne()
-        {
-            createDirIfNotExist();            
+        private static void moveFoldersInOne()
+        {         
             var dontInclude = Path.Combine(DESKTOP, Environment.UserName);
             foreach (DirectoryInfo dir in dir.EnumerateDirectories())
             {
@@ -162,10 +170,9 @@ namespace KeepItClean
                     }
                 }             
             }
-            moveAllZipFilesInOne();
         }
 
-        public static void moveAllZipFilesInOne()
+        private static void moveZipFilesInOne()
         {            
             foreach (FileInfo file in dir.EnumerateFiles())
             {
@@ -196,6 +203,49 @@ namespace KeepItClean
                     }
                 }
             }
+        }
+
+        private static void moveVideosToVideos()
+        {
+            foreach (FileInfo file in dir.EnumerateFiles())
+            {
+                if (videoExtension.Contains(file.Extension.ToLowerInvariant()))
+                {
+                    var videoPath = Path.Combine(VIDEOS, file.Name);
+                    if (!File.Exists(videoPath))
+                    {
+                        try
+                        {
+                            File.Move(file.FullName, videoPath);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void Start()
+        {
+            moveDocumentsToDocuments();
+            moveImagesToPictures();
+            createDirIfNotExist();
+            moveFoldersInOne();
+            moveZipFilesInOne();
+            moveVideosToVideos();
         }
     }
 }

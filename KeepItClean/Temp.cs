@@ -1,33 +1,32 @@
 ﻿using System.IO;
-using Syroot.Windows.IO;
 
 namespace KeepItClean
 {
-    static class Download
+    static class Temp
     {
-        public readonly static string DOWNLOAD = new KnownFolder(KnownFolderType.Downloads).Path;
-        public readonly static DirectoryInfo dir = new DirectoryInfo(DOWNLOAD);
+        public static readonly string tempPath = Path.GetTempPath();
+        public static readonly DirectoryInfo dir = new DirectoryInfo(tempPath);
+
         public static void Clean()
         {
-            DirectoryInfo di = new DirectoryInfo(DOWNLOAD);
-            foreach (FileInfo file in di.EnumerateFiles())
+            foreach (FileInfo file in dir.EnumerateFiles())
             {
                 try
                 {
                     file.Delete();
-                } 
+                }
                 catch
                 {
                     continue;
                 }
             }
-            foreach (DirectoryInfo dir in di.EnumerateDirectories())
+            foreach (DirectoryInfo dir in dir.EnumerateDirectories())
             {
                 try
                 {
                     dir.Delete(true);
                 }
-                catch 
+                catch
                 {
                     continue;
                 }

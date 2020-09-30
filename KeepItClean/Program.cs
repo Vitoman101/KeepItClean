@@ -1,13 +1,16 @@
-﻿namespace KeepItClean
+﻿using System.Threading.Tasks;
+
+namespace KeepItClean
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Download.deleteEverything();
-            Desktop.moveImagesToPictures();
-            Desktop.moveDocumentsToDocuments();
-            Desktop.moveAllFoldersInOne();
+            Parallel.Invoke(
+                () => Download.Clean(),
+                () => Temp.Clean(),
+                () => Desktop.Start()
+                );
         }
 
         
