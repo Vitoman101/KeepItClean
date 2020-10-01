@@ -1,7 +1,6 @@
 ﻿using Syroot.Windows.IO;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 
@@ -164,9 +163,8 @@ namespace KeepItClean
                             Directory.Move(dir.FullName, desktopFolder);
                         }
                     }
-                    catch(Exception ex)
+                    catch
                     {
-                        Debug.WriteLine(ex);
                         continue;
                     }
                 }             
