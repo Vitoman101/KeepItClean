@@ -6,13 +6,13 @@ namespace KeepItClean
     {
         static void Main(string[] args)
         {
+            
             Parallel.Invoke(
                 () => Download.Clean(),
                 () => Temp.Clean(),
-                () => Desktop.Start()
+                () => Desktop.Clean()
                 );
-        }
 
-        
+        }
     }
 }

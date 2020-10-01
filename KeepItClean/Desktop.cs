@@ -1,6 +1,7 @@
 ﻿using Syroot.Windows.IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 
@@ -145,27 +146,27 @@ namespace KeepItClean
 
         private static void moveFoldersInOne()
         {         
-            var dontInclude = Path.Combine(DESKTOP, Environment.UserName);
+            var envFolder = Path.Combine(DESKTOP, Environment.UserName);
             foreach (DirectoryInfo dir in dir.EnumerateDirectories())
             {
                 var desktopFolder = Path.Combine(DESKTOP, Environment.UserName, dir.Name);
-                bool equals = dir.FullName.PathEquals(dontInclude);
+                bool equals = dir.FullName.PathEquals(envFolder);
                 if (!equals || directoriesNotToMove.Contains(dir.FullName))
                 {
                     try
                     {
-                        if (Directory.GetFileSystemEntries(dir.FullName).Length == 0 && !dir.Name.Equals("ZIP"))
+                        if (Directory.GetFileSystemEntries(dir.FullName).Length == 0 && !dir.Name.Equals("ZIP") || Directory.Exists(desktopFolder))
                         {
-                            dir.Delete();
+                            dir.Delete(true);
                         } 
                         else if(!dir.Name.Equals("ZIP"))
                         {
                             Directory.Move(dir.FullName, desktopFolder);
                         }
-                                            
                     }
-                    catch
-                    {                      
+                    catch(Exception ex)
+                    {
+                        Debug.WriteLine(ex);
                         continue;
                     }
                 }             
@@ -238,7 +239,7 @@ namespace KeepItClean
             }
         }
 
-        public static void Start()
+        public static void Clean()
         {
             moveDocumentsToDocuments();
             moveImagesToPictures();
