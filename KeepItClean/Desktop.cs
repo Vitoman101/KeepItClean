@@ -105,8 +105,18 @@ namespace KeepItClean
                     else
                     {
                         try
-                        {                          
-                            file.Delete();
+                        {    
+                            if(Comparison.FilesAreEqual(file, new FileInfo(documentPath)))
+                            {
+                                file.Delete();
+                            } 
+                            else
+                            {
+                                var fileDateName = File.GetLastWriteTime(file.FullName).ToString();
+                                var substring = fileDateName.Replace('/', '-').Replace(" ", "-").Replace(":","-").Substring(0, fileDateName.Length - 3);
+                                var fileRenamed = Path.Combine(DOCUMENTS, file.Name.Replace(Path.GetExtension(file.FullName), "") + "-" + substring + Path.GetExtension(file.FullName));
+                                File.Move(file.FullName, fileRenamed);
+                            }
                         }
                         catch
                         {
@@ -137,19 +147,13 @@ namespace KeepItClean
             }
         }
 
-        private static bool PathEquals(this string path1, string path2)
-        {
-            return Path.GetFullPath(path1)
-                .Equals(Path.GetFullPath(path2), StringComparison.InvariantCultureIgnoreCase);
-        }
-
         private static void moveFoldersInOne()
         {         
             var envFolder = Path.Combine(DESKTOP, Environment.UserName);
             foreach (DirectoryInfo dir in dir.EnumerateDirectories())
             {
                 var desktopFolder = Path.Combine(DESKTOP, Environment.UserName, dir.Name);
-                bool equals = dir.FullName.PathEquals(envFolder);
+                bool equals = Comparison.PathEquals(dir.FullName, envFolder);
                 if (!equals || directoriesNotToMove.Contains(dir.FullName))
                 {
                     try
