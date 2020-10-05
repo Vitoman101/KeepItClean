@@ -73,7 +73,17 @@ namespace KeepItClean
                     {
                         try
                         {
-                            file.Delete();
+                            if (Comparison.FilesAreEqual(file, new FileInfo(imagePath)))
+                            {
+                                file.Delete();
+                            }
+                            else
+                            {
+                                var dateEdited = File.GetLastWriteTime(file.FullName).ToString();
+                                var dateReplace = dateEdited.Replace('/', '-').Replace(" ", "-").Replace(":", "-").Substring(0, dateEdited.Length - 3);
+                                var fileRenamed = Path.Combine(PICTURES, file.Name.Replace(Path.GetExtension(file.FullName), "") + "-" + dateReplace + Path.GetExtension(file.FullName));
+                                File.Move(file.FullName, fileRenamed);
+                            }
                         }
                         catch
                         {
@@ -112,9 +122,9 @@ namespace KeepItClean
                             } 
                             else
                             {
-                                var fileDateName = File.GetLastWriteTime(file.FullName).ToString();
-                                var substring = fileDateName.Replace('/', '-').Replace(" ", "-").Replace(":","-").Substring(0, fileDateName.Length - 3);
-                                var fileRenamed = Path.Combine(DOCUMENTS, file.Name.Replace(Path.GetExtension(file.FullName), "") + "-" + substring + Path.GetExtension(file.FullName));
+                                var dateEdited = File.GetLastWriteTime(file.FullName).ToString();
+                                var dateReplace = dateEdited.Replace('/', '-').Replace(" ", "-").Replace(":","-").Substring(0, dateEdited.Length - 3);
+                                var fileRenamed = Path.Combine(DOCUMENTS, file.Name.Replace(Path.GetExtension(file.FullName), "") + "-" + dateReplace + Path.GetExtension(file.FullName));
                                 File.Move(file.FullName, fileRenamed);
                             }
                         }
@@ -197,7 +207,17 @@ namespace KeepItClean
                     {
                         try
                         {
-                            file.Delete();
+                            if (Comparison.FilesAreEqual(file, new FileInfo(zipPath)))
+                            {
+                                file.Delete();
+                            }
+                            else
+                            {
+                                var dateEdited = File.GetLastWriteTime(file.FullName).ToString();
+                                var dateReplace = dateEdited.Replace('/', '-').Replace(" ", "-").Replace(":", "-").Substring(0, dateEdited.Length - 3);
+                                var fileRenamed = Path.Combine(DESKTOP, "ZIP", file.Name.Replace(Path.GetExtension(file.FullName), "") + "-" + dateReplace + Path.GetExtension(file.FullName));
+                                File.Move(file.FullName, fileRenamed);
+                            }
                         }
                         catch
                         {
@@ -230,7 +250,17 @@ namespace KeepItClean
                     {
                         try
                         {
-                            file.Delete();
+                            if (Comparison.FilesAreEqual(file, new FileInfo(videoPath)))
+                            {
+                                file.Delete();
+                            }
+                            else
+                            {
+                                var dateEdited = File.GetLastWriteTime(file.FullName).ToString();
+                                var dateReplace = dateEdited.Replace('/', '-').Replace(" ", "-").Replace(":", "-").Substring(0, dateEdited.Length - 3);
+                                var fileRenamed = Path.Combine(VIDEOS, "ZIP", file.Name.Replace(Path.GetExtension(file.FullName), "") + "-" + dateReplace + Path.GetExtension(file.FullName));
+                                File.Move(file.FullName, fileRenamed);
+                            }
                         }
                         catch
                         {
